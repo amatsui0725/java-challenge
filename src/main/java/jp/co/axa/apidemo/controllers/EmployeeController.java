@@ -33,9 +33,8 @@ public class EmployeeController {
     }
 
     @PostMapping("/employees")
-    public void saveEmployee(Employee employee) {
-        employeeService.saveEmployee(employee);
-        System.out.println("Employee Saved Successfully");
+    public ResponseEntity<Employee> saveEmployee(Employee employee) {
+        return ResponseEntity.ok(employeeService.saveEmployee(employee));
     }
 
     @DeleteMapping("/employees/{employeeId}")
