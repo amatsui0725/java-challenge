@@ -12,6 +12,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.util.Base64Utils;
+import org.springframework.http.HttpHeaders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,7 @@ public class EmployeeControllerTests {
 
         // when - action or behaviour that we are going test
         ResultActions response = mockMvc.perform(post("/api/v1/employees")
+                .header(HttpHeaders.AUTHORIZATION, "Basic " + Base64Utils.encodeToString("akira:password".getBytes()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(employee)));
 
@@ -74,7 +77,8 @@ public class EmployeeControllerTests {
         given(employeeService.retrieveEmployees()).willReturn(listOfEmployees);
 
         // when - action or the behaviour that we are going test
-        ResultActions response = mockMvc.perform(get("/api/v1/employees"));
+        ResultActions response = mockMvc.perform(get("/api/v1/employees").header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("akira:password".getBytes())));
 
         // then - verify the output
         response.andExpect(status().isOk())
@@ -93,7 +97,9 @@ public class EmployeeControllerTests {
         given(employeeService.getEmployee(employeeId)).willReturn(Optional.of(employee));
 
         // when - action or the behaviour that we are going test
-        ResultActions response = mockMvc.perform(get("/api/v1/employees/{id}", employeeId));
+        ResultActions response = mockMvc
+                .perform(get("/api/v1/employees/{id}", employeeId).header(HttpHeaders.AUTHORIZATION,
+                        "Basic " + Base64Utils.encodeToString("akira:password".getBytes())));
 
         // then - verify the output
         response.andExpect(status().isOk())
@@ -112,7 +118,9 @@ public class EmployeeControllerTests {
         given(employeeService.getEmployee(employeeId)).willReturn(Optional.empty());
 
         // when - action or the behaviour that we are going test
-        ResultActions response = mockMvc.perform(get("/api/v1/employees/{id}", employeeId));
+        ResultActions response = mockMvc
+                .perform(get("/api/v1/employees/{id}", employeeId).header(HttpHeaders.AUTHORIZATION,
+                        "Basic " + Base64Utils.encodeToString("akira:password".getBytes())));
 
         // then - verify the output
         response.andExpect(status().isNotFound())
@@ -142,6 +150,7 @@ public class EmployeeControllerTests {
 
         // when - action or the behaviour that we are going test
         ResultActions response = mockMvc.perform(put("/api/v1/employees/{id}", employeeId)
+                .header(HttpHeaders.AUTHORIZATION, "Basic " + Base64Utils.encodeToString("akira:password".getBytes()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedEmployee)));
 
@@ -169,6 +178,7 @@ public class EmployeeControllerTests {
 
         // when - action or the behaviour that we are going test
         ResultActions response = mockMvc.perform(put("/api/v1/employees/{id}", employeeId)
+                .header(HttpHeaders.AUTHORIZATION, "Basic " + Base64Utils.encodeToString("akira:password".getBytes()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedEmployee)));
 
@@ -191,7 +201,9 @@ public class EmployeeControllerTests {
         willDoNothing().given(employeeService).deleteEmployee(employeeId);
 
         // when - action or the behaviour that we are going test
-        ResultActions response = mockMvc.perform(delete("/api/v1/employees/{id}", employeeId));
+        ResultActions response = mockMvc
+                .perform(delete("/api/v1/employees/{id}", employeeId).header(HttpHeaders.AUTHORIZATION,
+                        "Basic " + Base64Utils.encodeToString("akira:password".getBytes())));
 
         // then - verify the output
         response.andExpect(status().is2xxSuccessful())
